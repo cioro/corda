@@ -12,7 +12,7 @@ import java.util.*
 /**
  * Initiates a flow that produces an Issue/Move or Exit Cash transaction.
  */
-abstract class AbstractCashFlow<out T>(override val progressTracker: ProgressTracker) : FlowLogic<T>() {
+abstract class AbstractCashFlow<out T>(override val progressTracker: ProgressTracker) : InitiatingFlowLogic<T>() {
     companion object {
         object GENERATING_ID : ProgressTracker.Step("Generating anonymous identities")
         object GENERATING_TX : ProgressTracker.Step("Generating transaction")

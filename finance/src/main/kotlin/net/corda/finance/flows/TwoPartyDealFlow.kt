@@ -75,7 +75,7 @@ object TwoPartyDealFlow {
      * Abstracted bilateral deal flow participant that is recipient of initial communication.
      */
     abstract class Secondary<U>(override val progressTracker: ProgressTracker = Secondary.tracker(),
-                                val regulators: Collection<Party> = emptySet()) : FlowLogic<SignedTransaction>() {
+                                val regulators: Collection<Party> = emptySet()) : InitiatingFlowLogic<SignedTransaction>() {
 
         companion object {
             object RECEIVING : ProgressTracker.Step("Waiting for deal info.")

@@ -60,7 +60,7 @@ class FinalityFlowTests {
     }
 
     @InitiatingFlow
-    private class Finaliser(private val stx: SignedTransaction, private val otherParty: Party) : FlowLogic<SignedTransaction>() {
+    private class Finaliser(private val stx: SignedTransaction, private val otherParty: Party) : InitiatingFlowLogic<SignedTransaction>() {
         @Suspendable
         override fun call(): SignedTransaction = subFlow(FinalityFlow(stx, initiateFlow(otherParty)))
     }

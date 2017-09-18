@@ -25,7 +25,7 @@ class CommercialPaperIssueFlow(private val amount: Amount<Currency>,
                                private val issueRef: OpaqueBytes,
                                private val recipient: Party,
                                private val notary: Party,
-                               override val progressTracker: ProgressTracker) : FlowLogic<SignedTransaction>() {
+                               override val progressTracker: ProgressTracker) : InitiatingFlowLogic<SignedTransaction>() {
     constructor(amount: Amount<Currency>, issueRef: OpaqueBytes, recipient: Party, notary: Party) : this(amount, issueRef, recipient, notary, tracker())
 
     companion object {

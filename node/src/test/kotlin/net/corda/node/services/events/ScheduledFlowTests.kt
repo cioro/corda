@@ -60,7 +60,7 @@ class ScheduledFlowTests {
     }
 
     @InitiatingFlow
-    class InsertInitialStateFlow(private val destination: Party) : FlowLogic<Unit>() {
+    class InsertInitialStateFlow(private val destination: Party) : InitiatingFlowLogic<Unit>() {
         @Suspendable
         override fun call() {
             val scheduledState = ScheduledState(serviceHub.clock.instant(),
@@ -85,7 +85,7 @@ class ScheduledFlowTests {
 
     @SchedulableFlow
     @InitiatingFlow
-    class ScheduledFlow(private val stateRef: StateRef) : FlowLogic<Unit>() {
+    class ScheduledFlow(private val stateRef: StateRef) : InitiatingFlowLogic<Unit>() {
         @Suspendable
         override fun call() {
             val state = serviceHub.toStateAndRef<ScheduledState>(stateRef)
