@@ -63,6 +63,7 @@ class AttachmentsClassLoaderTests : TestDependencyInjectionBase() {
 
         val cordapp get() = cordappService.cordapps.first()
         val attachmentId get() = cordappService.getCordappAttachmentId(cordapp)!!
+        val appContext get() = cordappService.getAppContext(cordapp)
     }
 
     // These ClassLoaders work together to load 'AnotherDummyContract' in a disposable way, such that even though
@@ -279,29 +280,28 @@ class AttachmentsClassLoaderTests : TestDependencyInjectionBase() {
 
     @Test
     fun `test serialization of WireTransaction with dynamically loaded contract`() {
-        ClassLoaderForTests().use { child ->
-            val contractClass = Class.forName(ISOLATED_CONTRACT_CLASS_NAME, true, child)
-            val contract = contractClass.newInstance() as DummyContractBackdoor
-            val tx = contract.generateInitial(MEGA_CORP.ref(0), 42, DUMMY_NOTARY)
-            val context = SerializationFactory.defaultFactory.defaultContext
-                    .withWhitelisted(contract.javaClass)
-                    .withWhitelisted(Class.forName("${ISOLATED_CONTRACT_CLASS_NAME}\$State", true, child))
-                    .withWhitelisted(Class.forName("${ISOLATED_CONTRACT_CLASS_NAME}\$Commands\$Create", true, child))
-                    .withServiceHub(serviceHub)
-                    .withClassLoader(child)
+        val child = serviceHub.appContext.classLoader
+        val contractClass = Class.forName(ISOLATED_CONTRACT_CLASS_NAME, true, child)
+        val contract = contractClass.newInstance() as DummyContractBackdoor
+        val tx = contract.generateInitial(MEGA_CORP.ref(0), 42, DUMMY_NOTARY)
+        val context = SerializationFactory.defaultFactory.defaultContext
+                .withWhitelisted(contract.javaClass)
+                .withWhitelisted(Class.forName("${ISOLATED_CONTRACT_CLASS_NAME}\$State", true, child))
+                .withWhitelisted(Class.forName("${ISOLATED_CONTRACT_CLASS_NAME}\$Commands\$Create", true, child))
+                .withServiceHub(serviceHub)
+                .withClassLoader(child)
 
-            val bytes = run {
-                val wireTransaction = tx.toWireTransaction(serviceHub)
-                wireTransaction.serialize(context = context)
-            }
-            val copiedWireTransaction = bytes.deserialize(context = context)
-            assertEquals(1, copiedWireTransaction.outputs.size)
-            // Contracts need to be loaded by the same classloader as the ContractState itself
-            val contractClassloader = copiedWireTransaction.getOutput(0).javaClass.classLoader
-            val contract2 = contractClassloader.loadClass(copiedWireTransaction.outputs.first().contract).newInstance() as DummyContractBackdoor
-            assertEquals(contract2.javaClass.classLoader, copiedWireTransaction.outputs[0].data.javaClass.classLoader)
-            assertEquals(42, contract2.inspectState(copiedWireTransaction.outputs[0].data))
+        val bytes = run {
+            val wireTransaction = tx.toWireTransaction(serviceHub)
+            wireTransaction.serialize(context = context)
         }
+        val copiedWireTransaction = bytes.deserialize(context = context)
+        assertEquals(1, copiedWireTransaction.outputs.size)
+        // Contracts need to be loaded by the same classloader as the ContractState itself
+        val contractClassloader = copiedWireTransaction.getOutput(0).javaClass.classLoader
+        val contract2 = contractClassloader.loadClass(copiedWireTransaction.outputs.first().contract).newInstance() as DummyContractBackdoor
+        assertEquals(contract2.javaClass.classLoader, copiedWireTransaction.outputs[0].data.javaClass.classLoader)
+        assertEquals(42, contract2.inspectState(copiedWireTransaction.outputs[0].data))
     }
 
     @Test
