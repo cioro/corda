@@ -62,6 +62,7 @@ public class VaultQueryJavaTests extends TestDependencyInjectionBase {
 
     @Before
     public void setUp() {
+        setCordappPackages("net.corda.testing.contracts", "net.corda.finance.contracts.asset");
         ArrayList<KeyPair> keys = new ArrayList<>();
         keys.add(getMEGA_CORP_KEY());
         keys.add(getDUMMY_NOTARY_KEY());
@@ -78,6 +79,7 @@ public class VaultQueryJavaTests extends TestDependencyInjectionBase {
     @After
     public void cleanUp() throws IOException {
         database.close();
+        unsetCordappPackages();
     }
 
     /**
