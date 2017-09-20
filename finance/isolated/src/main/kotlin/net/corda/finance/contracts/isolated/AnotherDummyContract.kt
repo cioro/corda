@@ -5,7 +5,7 @@ import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.core.transactions.TransactionBuilder
-import net.corda.nodeapi.DummyContractBackdoor
+import net.corda.nodeapi.internal.DummyContractBackdoor
 
 val ANOTHER_DUMMY_PROGRAM_ID = "net.corda.finance.contracts.isolated.AnotherDummyContract"
 
