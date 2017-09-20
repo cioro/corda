@@ -11,9 +11,7 @@ import net.corda.node.internal.StartedNode
 import net.corda.finance.schemas.CashSchemaV1
 import net.corda.node.services.network.NetworkMapService
 import net.corda.node.services.transactions.ValidatingNotaryService
-import net.corda.testing.DUMMY_NOTARY
-import net.corda.testing.DUMMY_NOTARY_KEY
-import net.corda.testing.chooseIdentity
+import net.corda.testing.*
 import net.corda.testing.node.MockNetwork
 import org.junit.After
 import org.junit.Assert
@@ -30,6 +28,7 @@ class CustomVaultQueryTest {
 
     @Before
     fun setup() {
+        setCordappPackages("net.corda.finance.contracts.asset")
         mockNet = MockNetwork(threadPerNode = true)
         val notaryService = ServiceInfo(ValidatingNotaryService.type)
         notaryNode = mockNet.createNode(
@@ -48,6 +47,7 @@ class CustomVaultQueryTest {
     @After
     fun cleanUp() {
         mockNet.stopNodes()
+        unsetCordappPackages()
     }
 
     @Test

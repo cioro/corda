@@ -119,10 +119,6 @@ class CordappLoader private constructor(private val cordappJarPaths: List<URL>) 
         private val generatedCordapps = mutableMapOf<URL, URI>()
     }
 
-    init {
-        logger.info("Using cordapp JARs: ${cordappJarPaths.joinToString { it.toExternalForm() }}")
-    }
-
     private fun loadCordapps(): List<Cordapp> {
         return cordappJarPaths.map {
             val scanResult = scanCordapp(it)
