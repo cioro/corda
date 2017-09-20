@@ -52,7 +52,7 @@ class DummyContractV2 : UpgradedContract<DummyContract.State, DummyContractV2.St
         return Pair(TransactionBuilder(notary).apply {
             states.forEach {
                 addInputState(it)
-                addOutputState(upgrade(it.state.data), DUMMY_V2_PROGRAM_ID)
+                addOutputState(upgrade(it.state.data), DUMMY_V2_PROGRAM_ID, it.state.constraint)
                 addCommand(UpgradeCommand(DUMMY_V2_PROGRAM_ID), signees.map { it.owningKey }.toList())
             }
         }.toWireTransaction(services), signees)

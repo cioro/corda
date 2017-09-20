@@ -47,7 +47,11 @@ import java.util.*
  * A singleton utility that only provides a mock identity, key and storage service. However, this is sufficient for
  * building chains of transactions and verifying them. It isn't sufficient for testing flows however.
  */
-open class MockServices(vararg val keys: KeyPair) : ServiceHub {
+open class MockServices(cordappPackages: List<String> = emptyList(), vararg val keys: KeyPair) : ServiceHub {
+
+    init {
+        setCordappPackages(*cordappPackages.toTypedArray())
+    }
 
     companion object {
 
@@ -109,7 +113,7 @@ open class MockServices(vararg val keys: KeyPair) : ServiceHub {
             val identityServiceRef: IdentityService by lazy { createIdentityService() }
             val database = configureDatabase(dataSourceProps, databaseProperties, createSchemaService, { identityServiceRef })
             val mockService = database.transaction {
-                object : MockServices(*(keys.toTypedArray())) {
+                object : MockServices(emptyList(), *(keys.toTypedArray())) {
                     override val identityService: IdentityService = database.transaction { identityServiceRef }
                     override val vaultService: VaultService = makeVaultService(database.hibernateConfig)
 
@@ -130,7 +134,9 @@ open class MockServices(vararg val keys: KeyPair) : ServiceHub {
         }
     }
 
-    constructor() : this(generateKeyPair())
+    constructor(vararg keys: KeyPair) : this(emptyList(), *keys)
+
+    constructor() : this(emptyList(), generateKeyPair())
 
     val key: KeyPair get() = keys.first()
 

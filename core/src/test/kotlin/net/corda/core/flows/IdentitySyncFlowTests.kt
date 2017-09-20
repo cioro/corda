@@ -9,10 +9,7 @@ import net.corda.core.utilities.unwrap
 import net.corda.finance.DOLLARS
 import net.corda.finance.contracts.asset.Cash
 import net.corda.finance.flows.CashIssueAndPaymentFlow
-import net.corda.testing.ALICE
-import net.corda.testing.BOB
-import net.corda.testing.DUMMY_NOTARY
-import net.corda.testing.chooseIdentity
+import net.corda.testing.*
 import net.corda.testing.node.MockNetwork
 import org.junit.After
 import org.junit.Before
@@ -25,6 +22,7 @@ class IdentitySyncFlowTests {
 
     @Before
     fun before() {
+        setCordappPackages("net.corda.finance.contracts.asset")
         // We run this in parallel threads to help catch any race conditions that may exist.
         mockNet = MockNetwork(networkSendManuallyPumped = false, threadPerNode = true)
     }
@@ -32,6 +30,7 @@ class IdentitySyncFlowTests {
     @After
     fun cleanUp() {
         mockNet.stopNodes()
+        unsetCordappPackages()
     }
 
     @Test

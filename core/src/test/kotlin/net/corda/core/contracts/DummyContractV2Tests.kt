@@ -10,6 +10,10 @@ import net.corda.testing.DUMMY_NOTARY
 import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.testing.contracts.DUMMY_V2_PROGRAM_ID
 import net.corda.testing.node.MockServices
+import net.corda.testing.setCordappPackages
+import net.corda.testing.unsetCordappPackages
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -18,18 +22,28 @@ import kotlin.test.assertTrue
  * Tests for the version 2 dummy contract, to cover ensuring upgrade transactions are built correctly.
  */
 class DummyContractV2Tests {
+    @Before
+    fun setup() {
+        setCordappPackages("net.corda.testing.contracts")
+    }
+
+    @After
+    fun tearDown() {
+        unsetCordappPackages()
+    }
+
     @Test
     fun `upgrade from v1`() {
         val services = MockServices()
         val contractUpgrade = DummyContractV2()
-        val v1State = TransactionState(DummyContract.SingleOwnerState(0, ALICE), DUMMY_PROGRAM_ID, DUMMY_NOTARY)
+        val v1State = TransactionState(DummyContract.SingleOwnerState(0, ALICE), DUMMY_PROGRAM_ID, DUMMY_NOTARY, constraint = AlwaysAcceptAttachmentConstraint)
         val v1Ref = StateRef(SecureHash.randomSHA256(), 0)
         val v1StateAndRef = StateAndRef(v1State, v1Ref)
         val (tx, _) = DummyContractV2().generateUpgradeFromV1(services, v1StateAndRef)
 
         assertEquals(v1Ref, tx.inputs.single())
 
-        val expectedOutput = TransactionState(contractUpgrade.upgrade(v1State.data), DUMMY_V2_PROGRAM_ID, DUMMY_NOTARY)
+        val expectedOutput = TransactionState(contractUpgrade.upgrade(v1State.data), DUMMY_V2_PROGRAM_ID, DUMMY_NOTARY, constraint = AlwaysAcceptAttachmentConstraint)
         val actualOutput = tx.outputs.single()
         assertEquals(expectedOutput, actualOutput)
 
