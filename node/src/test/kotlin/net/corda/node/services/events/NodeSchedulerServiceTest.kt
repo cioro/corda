@@ -45,19 +45,19 @@ import java.util.concurrent.TimeUnit
 import kotlin.test.assertTrue
 
 class NodeSchedulerServiceTest : SingletonSerializeAsToken() {
-    val realClock: Clock = Clock.systemUTC()
-    val stoppedClock: Clock = Clock.fixed(realClock.instant(), realClock.zone)
-    val testClock = TestClock(stoppedClock)
+    private val realClock: Clock = Clock.systemUTC()
+    private val stoppedClock: Clock = Clock.fixed(realClock.instant(), realClock.zone)
+    private val testClock = TestClock(stoppedClock)
 
-    val schedulerGatedExecutor = AffinityExecutor.Gate(true)
+    private val schedulerGatedExecutor = AffinityExecutor.Gate(true)
 
-    lateinit var services: MockServiceHubInternal
+    private lateinit var services: MockServiceHubInternal
 
-    lateinit var scheduler: NodeSchedulerService
-    lateinit var smmExecutor: AffinityExecutor.ServiceAffinityExecutor
-    lateinit var database: CordaPersistence
-    lateinit var countDown: CountDownLatch
-    lateinit var smmHasRemovedAllFlows: CountDownLatch
+    private lateinit var scheduler: NodeSchedulerService
+    private lateinit var smmExecutor: AffinityExecutor.ServiceAffinityExecutor
+    private lateinit var database: CordaPersistence
+    private lateinit var countDown: CountDownLatch
+    private lateinit var smmHasRemovedAllFlows: CountDownLatch
 
     var calls: Int = 0
 

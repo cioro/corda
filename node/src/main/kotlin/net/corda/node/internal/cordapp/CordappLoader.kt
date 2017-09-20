@@ -61,7 +61,7 @@ class CordappLoader private constructor(private val cordappJarPaths: List<URL>) 
         /**
          * Create a dev mode CordappLoader for test environments
          */
-        fun createWithTestPackages(testPackages: List<String>) = CordappLoader(testPackages.flatMap(this::createScanPackage))
+        fun createWithTestPackages(testPackages: List<String> = CordappLoader.testPackages) = CordappLoader(testPackages.flatMap(this::createScanPackage))
 
         /**
          * Creates a dev mode CordappLoader intended only to be used in test environments
