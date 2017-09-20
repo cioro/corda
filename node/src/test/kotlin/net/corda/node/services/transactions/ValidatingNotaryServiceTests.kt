@@ -15,11 +15,8 @@ import net.corda.core.transactions.TransactionBuilder
 import net.corda.node.internal.StartedNode
 import net.corda.node.services.issueInvalidState
 import net.corda.node.services.network.NetworkMapService
-import net.corda.testing.DUMMY_NOTARY
-import net.corda.testing.MEGA_CORP_KEY
-import net.corda.testing.chooseIdentity
+import net.corda.testing.*
 import net.corda.testing.contracts.DummyContract
-import net.corda.testing.dummyCommand
 import net.corda.testing.node.MockNetwork
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
@@ -36,6 +33,7 @@ class ValidatingNotaryServiceTests {
 
     @Before
     fun setup() {
+        setCordappPackages("net.corda.testing.contracts")
         mockNet = MockNetwork()
         notaryNode = mockNet.createNode(
                 legalName = DUMMY_NOTARY.name,
@@ -49,6 +47,7 @@ class ValidatingNotaryServiceTests {
     @After
     fun cleanUp() {
         mockNet.stopNodes()
+        unsetCordappPackages()
     }
 
     @Test

@@ -8,7 +8,6 @@ import net.corda.core.identity.PartyAndCertificate
 import net.corda.core.node.NodeInfo
 import net.corda.core.node.services.*
 import net.corda.core.serialization.SerializeAsToken
-import net.corda.core.utilities.NonEmptySet
 import net.corda.node.internal.InitiatedFlowFactory
 import net.corda.node.internal.cordapp.CordappLoader
 import net.corda.node.internal.cordapp.CordappProvider

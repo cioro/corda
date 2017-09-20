@@ -13,6 +13,8 @@ import net.corda.core.node.services.VaultService
 import net.corda.core.serialization.SingletonSerializeAsToken
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.days
+import net.corda.node.internal.cordapp.CordappLoader
+import net.corda.node.internal.cordapp.CordappProvider
 import net.corda.node.services.identity.InMemoryIdentityService
 import net.corda.node.services.persistence.DBCheckpointStorage
 import net.corda.node.services.statemachine.FlowLogicRefFactoryImpl
@@ -70,6 +72,7 @@ class NodeSchedulerServiceTest : SingletonSerializeAsToken() {
 
     @Before
     fun setup() {
+        setCordappPackages("net.corda.testing.contracts")
         initialiseTestSerialization()
         countDown = CountDownLatch(1)
         smmHasRemovedAllFlows = CountDownLatch(1)
@@ -95,6 +98,7 @@ class NodeSchedulerServiceTest : SingletonSerializeAsToken() {
                     network = mockMessagingService), TestReference {
                 override val vaultService: VaultService = NodeVaultService(this)
                 override val testReference = this@NodeSchedulerServiceTest
+                override val cordappService: CordappProvider = CordappProvider(CordappLoader.createWithTestPackages()).start(attachments)
             }
             smmExecutor = AffinityExecutor.ServiceAffinityExecutor("test", 1)
             scheduler = NodeSchedulerService(services, schedulerGatedExecutor, serverThread = smmExecutor)
@@ -120,6 +124,7 @@ class NodeSchedulerServiceTest : SingletonSerializeAsToken() {
         smmExecutor.awaitTermination(60, TimeUnit.SECONDS)
         database.close()
         resetTestSerialization()
+        unsetCordappPackages()
     }
 
     class TestState(val flowLogicRef: FlowLogicRef, val instant: Instant, val myIdentity: Party) : LinearState, SchedulableState {

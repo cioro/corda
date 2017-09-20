@@ -53,6 +53,7 @@ class NodeVaultServiceTest : TestDependencyInjectionBase() {
 
     @Before
     fun setUp() {
+        setCordappPackages("net.corda.finance.contracts.asset")
         LogHelper.setLevel(NodeVaultService::class)
         val databaseAndServices = makeTestDatabaseAndMockServices(keys = listOf(BOC_KEY, DUMMY_CASH_ISSUER_KEY),
                                                                   customSchemas = setOf(CashSchemaV1))
@@ -65,6 +66,7 @@ class NodeVaultServiceTest : TestDependencyInjectionBase() {
     fun tearDown() {
         database.close()
         LogHelper.reset(NodeVaultService::class)
+        unsetCordappPackages()
     }
 
     @Suspendable

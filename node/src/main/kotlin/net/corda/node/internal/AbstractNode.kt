@@ -5,7 +5,6 @@ import com.google.common.collect.Lists
 import com.google.common.collect.MutableClassToInstanceMap
 import com.google.common.util.concurrent.MoreExecutors
 import net.corda.core.concurrent.CordaFuture
-import net.corda.core.cordapp.CordappContext
 import net.corda.core.cordapp.CordappService
 import net.corda.core.crypto.*
 import net.corda.core.flows.*

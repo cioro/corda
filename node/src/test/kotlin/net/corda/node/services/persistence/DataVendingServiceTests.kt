@@ -15,9 +15,7 @@ import net.corda.finance.USD
 import net.corda.finance.contracts.asset.Cash
 import net.corda.node.internal.StartedNode
 import net.corda.node.services.NotifyTransactionHandler
-import net.corda.testing.DUMMY_NOTARY
-import net.corda.testing.MEGA_CORP
-import net.corda.testing.chooseIdentity
+import net.corda.testing.*
 import net.corda.testing.node.MockNetwork
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
@@ -33,12 +31,14 @@ class DataVendingServiceTests {
 
     @Before
     fun setup() {
+        setCordappPackages("net.corda.finance.contracts.asset")
         mockNet = MockNetwork()
     }
 
     @After
     fun cleanUp() {
         mockNet.stopNodes()
+        unsetCordappPackages()
     }
 
     @Test
