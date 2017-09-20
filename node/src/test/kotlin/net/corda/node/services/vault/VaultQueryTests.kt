@@ -60,6 +60,8 @@ class VaultQueryTests : TestDependencyInjectionBase() {
 
     @Before
     fun setUp() {
+        setCordappPackages("net.corda.testing.contracts", "net.corda.finance.contracts.asset")
+
         // register additional identities
         identitySvc.verifyAndRegisterIdentity(CASH_NOTARY_IDENTITY)
         identitySvc.verifyAndRegisterIdentity(BOC_IDENTITY)
@@ -74,6 +76,7 @@ class VaultQueryTests : TestDependencyInjectionBase() {
     @After
     fun tearDown() {
         database.close()
+        unsetCordappPackages()
     }
 
     /**
