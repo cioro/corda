@@ -395,13 +395,13 @@ abstract class AbstractNode(open val configuration: NodeConfiguration,
     }
 
     private fun makeCordappLoader(): CordappLoader {
-        val scanPackage = System.getProperty("net.corda.node.cordapp.scan.package")
+        val scanPackages = System.getProperty("net.corda.node.cordapp.scan.packages")
         return if (CordappLoader.testPackages.isNotEmpty()) {
             check(configuration.devMode) { "Package scanning can only occur in dev mode" }
             CordappLoader.createWithTestPackages()
-        } else if (scanPackage != null) {
+        } else if (scanPackages != null) {
             check(configuration.devMode) { "Package scanning can only occur in dev mode" }
-            CordappLoader.createDevMode(scanPackage)
+            CordappLoader.createDevMode(scanPackages)
         } else  {
             CordappLoader.createDefault(configuration.baseDirectory)
         }
