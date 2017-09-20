@@ -50,13 +50,9 @@ class ObligationTests {
             beneficiary = CHARLIE
     )
     private val outState = inState.copy(beneficiary = AnonymousParty(BOB_PUBKEY))
-    private val miniCorpServices = MockServices(MINI_CORP_KEY)
+    private val miniCorpServices = MockServices(listOf("net.corda.finance.contracts.asset"), MINI_CORP_KEY)
     private val notaryServices = MockServices(DUMMY_NOTARY_KEY)
-
-    private val mockService =
-            object : MockServices() {
-                override val cordappService = MockCordappService()
-            }
+    private val mockService = MockServices(listOf("net.corda.finance.contracts.asset"))
 
     private fun cashObligationTestRoots(
             group: LedgerDSL<TestTransactionDSLInterpreter, TestLedgerDSLInterpreter>
@@ -68,12 +64,6 @@ class ObligationTests {
             unconstrainedOutput(OBLIGATION_PROGRAM_ID, "MegaCorp's $1,000,000 obligation to Bob", oneMillionDollars.OBLIGATION between Pair(MEGA_CORP, BOB))
             unconstrainedOutput(OBLIGATION_PROGRAM_ID, "Alice's $1,000,000", 1000000.DOLLARS.CASH `issued by` defaultIssuer `owned by` ALICE)
         }
-    }
-
-    @Before
-    fun setup() {
-//        (miniCorpServices.cordappService as MockCordappService).addMockCordapp(OBLIGATION_PROGRAM_ID, miniCorpServices)
-//        (miniCorpServices.cordappService as MockCordappService).addMockCordapp(CASH_PROGRAM_ID, miniCorpServices)
     }
 
     @After

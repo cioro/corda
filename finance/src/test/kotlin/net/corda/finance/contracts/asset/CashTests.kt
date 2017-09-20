@@ -21,7 +21,6 @@ import net.corda.node.utilities.CordaPersistence
 import net.corda.testing.*
 import net.corda.testing.contracts.DummyState
 import net.corda.testing.contracts.fillWithSomeTestCash
-import net.corda.testing.node.MockCordappService
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.MockServices.Companion.makeTestDatabaseAndMockServices
 import org.junit.After
@@ -55,13 +54,8 @@ class CashTests : TestDependencyInjectionBase() {
     @Before
     fun setUp() {
         LogHelper.setLevel(NodeVaultService::class)
-        megaCorpServices =
-            object : MockServices(MEGA_CORP_KEY) {
-                override val cordappService = MockCordappService()
-            }
-        megaCorpServices.cordappService
-
-        val databaseAndServices = makeTestDatabaseAndMockServices(keys = listOf(MINI_CORP_KEY, MEGA_CORP_KEY, OUR_KEY))
+        megaCorpServices = MockServices(listOf("net.corda.finance.contracts.asset"), MEGA_CORP_KEY)
+        val databaseAndServices = makeTestDatabaseAndMockServices(cordappPackages = listOf("net.corda.finance.contracts.asset"), keys = listOf(MINI_CORP_KEY, MEGA_CORP_KEY, OUR_KEY))
         database = databaseAndServices.first
         miniCorpServices = databaseAndServices.second
 
@@ -776,14 +770,11 @@ class CashTests : TestDependencyInjectionBase() {
         states.sumCash()
     }
 
-    private val mockService =
-            object : MockServices() {
-                override val cordappService = MockCordappService()
-            }
-
     // Double spend.
     @Test
     fun chainCashDoubleSpendFailsWith() {
+        val mockService = MockServices(listOf("net.corda.finance.contracts.asset"), MEGA_CORP_KEY)
+
         ledger(mockService) {
             unverifiedTransaction {
                 attachment(CASH_PROGRAM_ID)
