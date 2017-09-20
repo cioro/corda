@@ -27,6 +27,9 @@ class DefaultWhitelist : CordaPluginRegistry() {
                     UUID::class.java,
                     LinkedHashSet::class.java,
                     Currency::class.java,
+                    Collections.emptyList<Any>().javaClass,
+                    Collections.emptySet<Any>().javaClass,
+                    Collections.emptyMap<Any, Any>().javaClass,
                     listOf(Unit).javaClass, // SingletonList
                     setOf(Unit).javaClass, // SingletonSet
                     mapOf(Unit to Unit).javaClass, // SingletonMap

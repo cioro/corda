@@ -26,9 +26,9 @@ class CordaClassResolver(serializationContext: SerializationContext) : DefaultCl
     val whitelist: ClassWhitelist = TransientClassWhiteList(serializationContext.whitelist)
 
     private val javaAliases: Map<Class<*>, Class<*>> = mapOf(
-        listOf<Any>().javaClass to ArrayList<Any>().javaClass,
-        setOf<Any>().javaClass to LinkedHashSet<Any>().javaClass,
-        mapOf<Any, Any>().javaClass to LinkedHashMap<Any, Any>().javaClass
+        listOf<Any>().javaClass to Collections.emptyList<Any>().javaClass,
+        setOf<Any>().javaClass to Collections.emptySet<Any>().javaClass,
+        mapOf<Any, Any>().javaClass to Collections.emptyMap<Any, Any>().javaClass
     )
 
     /** Returns the registration for the specified class, or null if the class is not registered.  */
