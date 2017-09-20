@@ -1,6 +1,5 @@
 package net.corda.testing.node
 
-import net.corda.core.cordapp.CordappContext
 import net.corda.core.cordapp.CordappService
 import net.corda.core.crypto.*
 import net.corda.core.flows.StateMachineRunId
@@ -13,7 +12,6 @@ import net.corda.core.schemas.MappedSchema
 import net.corda.core.serialization.SerializeAsToken
 import net.corda.core.serialization.SingletonSerializeAsToken
 import net.corda.core.transactions.SignedTransaction
-import net.corda.core.utilities.NonEmptySet
 import net.corda.node.VersionInfo
 import net.corda.node.internal.cordapp.CordappLoader
 import net.corda.node.internal.cordapp.CordappProvider
@@ -35,7 +33,6 @@ import net.corda.testing.*
 import org.bouncycastle.operator.ContentSigner
 import rx.Observable
 import rx.subjects.PublishSubject
-import java.nio.file.Paths
 import java.security.KeyPair
 import java.security.PrivateKey
 import java.security.PublicKey
@@ -50,7 +47,11 @@ import java.util.*
  * A singleton utility that only provides a mock identity, key and storage service. However, this is sufficient for
  * building chains of transactions and verifying them. It isn't sufficient for testing flows however.
  */
-open class MockServices(vararg val keys: KeyPair) : ServiceHub {
+open class MockServices(cordappPackages: List<String> = emptyList(), vararg val keys: KeyPair) : ServiceHub {
+
+    init {
+        setCordappPackages(*cordappPackages.toTypedArray())
+    }
 
     companion object {
 
@@ -112,7 +113,7 @@ open class MockServices(vararg val keys: KeyPair) : ServiceHub {
             val identityServiceRef: IdentityService by lazy { createIdentityService() }
             val database = configureDatabase(dataSourceProps, databaseProperties, createSchemaService, { identityServiceRef })
             val mockService = database.transaction {
-                object : MockServices(*(keys.toTypedArray())) {
+                object : MockServices(emptyList(), *(keys.toTypedArray())) {
                     override val identityService: IdentityService = database.transaction { identityServiceRef }
                     override val vaultService: VaultService = makeVaultService(database.hibernateConfig)
 
@@ -133,7 +134,9 @@ open class MockServices(vararg val keys: KeyPair) : ServiceHub {
         }
     }
 
-    constructor() : this(generateKeyPair())
+    constructor(vararg keys: KeyPair) : this(emptyList(), *keys)
+
+    constructor() : this(emptyList(), generateKeyPair())
 
     val key: KeyPair get() = keys.first()
 
@@ -146,7 +149,7 @@ open class MockServices(vararg val keys: KeyPair) : ServiceHub {
         }
     }
 
-    override val attachments: AttachmentStorage = MockAttachmentStorage()
+    final override val attachments: AttachmentStorage = MockAttachmentStorage()
     override val validatedTransactions: WritableTransactionStorage = MockTransactionStorage()
     val stateMachineRecordedTransactionMapping: StateMachineRecordedTransactionMappingStorage = MockStateMachineRecordedTransactionMappingStorage()
     override val identityService: IdentityService = InMemoryIdentityService(MOCK_IDENTITIES, trustRoot = DEV_TRUST_ROOT)

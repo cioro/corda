@@ -32,12 +32,14 @@ class ResolveTransactionsFlowTest {
     lateinit var a: StartedNode<MockNetwork.MockNode>
     lateinit var b: StartedNode<MockNetwork.MockNode>
     lateinit var notary: Party
-    val megaCorpServices = MockServices(MEGA_CORP_KEY)
-    val notaryServices = MockServices(DUMMY_NOTARY_KEY)
+    lateinit var megaCorpServices: MockServices
+    lateinit var notaryServices: MockServices
 
     @Before
     fun setup() {
         setCordappPackages("net.corda.testing.contracts")
+        megaCorpServices = MockServices(MEGA_CORP_KEY)
+        notaryServices = MockServices(DUMMY_NOTARY_KEY)
         mockNet = MockNetwork()
         val nodes = mockNet.createSomeNodes()
         a = nodes.partyNodes[0]

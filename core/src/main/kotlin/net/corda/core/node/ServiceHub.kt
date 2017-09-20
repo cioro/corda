@@ -1,14 +1,11 @@
 package net.corda.core.node
 
 import net.corda.core.contracts.*
-import net.corda.core.cordapp.CordappContext
 import net.corda.core.cordapp.CordappService
 import net.corda.core.crypto.Crypto
 import net.corda.core.crypto.SignableData
 import net.corda.core.crypto.SignatureMetadata
 import net.corda.core.crypto.TransactionSignature
-import net.corda.core.identity.Party
-import net.corda.core.identity.PartyAndCertificate
 import net.corda.core.node.services.*
 import net.corda.core.serialization.SerializeAsToken
 import net.corda.core.transactions.FilteredTransaction
@@ -130,9 +127,9 @@ interface ServiceHub : ServicesForResolution {
     fun <T : ContractState> toStateAndRef(stateRef: StateRef): StateAndRef<T> {
         val stx = validatedTransactions.getTransaction(stateRef.txhash) ?: throw TransactionResolutionException(stateRef.txhash)
         return if (stx.isNotaryChangeTransaction()) {
-            stx.resolveNotaryChangeTransaction(this).outRef<T>(stateRef.index)
+            stx.resolveNotaryChangeTransaction(this).outRef(stateRef.index)
         } else {
-            stx.tx.outRef<T>(stateRef.index)
+            stx.tx.outRef(stateRef.index)
         }
     }
 

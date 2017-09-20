@@ -41,7 +41,7 @@ class ContractUpgradeFlowTest {
 
     @Before
     fun setup() {
-        setCordappPackages("net.corda.testing.contracts", "net.corda.finance.contracts.asset")
+        setCordappPackages("net.corda.testing.contracts", "net.corda.finance.contracts.asset", "net.corda.core.flows")
         mockNet = MockNetwork()
         val nodes = mockNet.createSomeNodes(notaryKeyPair = null) // prevent generation of notary override
         a = nodes.partyNodes[0]

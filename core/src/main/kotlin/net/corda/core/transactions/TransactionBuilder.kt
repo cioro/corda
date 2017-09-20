@@ -7,10 +7,8 @@ import net.corda.core.identity.Party
 import net.corda.core.internal.FlowStateMachine
 import net.corda.core.node.ServiceHub
 import net.corda.core.node.ServicesForResolution
-import net.corda.core.node.services.AttachmentId
 import net.corda.core.node.services.KeyManagementService
 import java.lang.UnsupportedOperationException
-import java.security.KeyPair
 import java.security.PublicKey
 import java.time.Duration
 import java.time.Instant

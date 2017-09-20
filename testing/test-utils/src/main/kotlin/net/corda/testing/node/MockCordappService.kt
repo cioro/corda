@@ -6,7 +6,6 @@ import net.corda.core.cordapp.CordappContext
 import net.corda.core.cordapp.CordappService
 import net.corda.core.node.ServiceHub
 import net.corda.core.node.services.AttachmentId
-import net.corda.core.utilities.hexToByteArray
 import java.nio.file.Paths
 import java.util.*
 
