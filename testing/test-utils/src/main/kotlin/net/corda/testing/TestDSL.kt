@@ -3,13 +3,11 @@ package net.corda.testing
 import net.corda.core.contracts.*
 import net.corda.core.crypto.*
 import net.corda.core.crypto.NullKeys.NULL_SIGNATURE
-import net.corda.core.crypto.CompositeKey
 import net.corda.core.identity.Party
 import net.corda.core.node.ServiceHub
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.transactions.WireTransaction
-import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.testing.contracts.DummyContract
 import java.io.InputStream
 import java.security.KeyPair
@@ -245,7 +243,7 @@ data class TestLedgerDSLInterpreter private constructor(
     private fun fillTransaction(transactionBuilder: TransactionBuilder) {
         if (transactionBuilder.commands().isEmpty()) transactionBuilder.addCommand(dummyCommand())
         if (transactionBuilder.inputStates().isEmpty() && transactionBuilder.outputStates().isEmpty()) {
-            transactionBuilder.addOutputState(DummyContract.SingleOwnerState(owner = ALICE), DUMMY_PROGRAM_ID)
+            transactionBuilder.addOutputState(DummyContract.SingleOwnerState(owner = ALICE), DummyContract.PROGRAM_ID)
         }
     }
 

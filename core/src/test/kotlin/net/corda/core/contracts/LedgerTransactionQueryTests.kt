@@ -6,7 +6,6 @@ import net.corda.core.transactions.LedgerTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.testing.DUMMY_NOTARY
 import net.corda.testing.TestDependencyInjectionBase
-import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.testing.chooseIdentity
 import net.corda.testing.contracts.DummyContract
 import net.corda.testing.dummyCommand
@@ -54,12 +53,12 @@ class LedgerTransactionQueryTests : TestDependencyInjectionBase() {
         val dummyState = makeDummyState(data)
         val fakeIssueTx = services.signInitialTransaction(
                 TransactionBuilder(notary = DUMMY_NOTARY)
-                        .addOutputState(dummyState, DUMMY_PROGRAM_ID)
+                        .addOutputState(dummyState, DummyContract.PROGRAM_ID)
                         .addCommand(dummyCommand())
         )
         services.recordTransactions(fakeIssueTx)
         val dummyStateRef = StateRef(fakeIssueTx.id, 0)
-        return StateAndRef(TransactionState(dummyState, DUMMY_PROGRAM_ID, DUMMY_NOTARY, null), dummyStateRef)
+        return StateAndRef(TransactionState(dummyState, DummyContract.PROGRAM_ID, DUMMY_NOTARY, null), dummyStateRef)
     }
 
     private fun makeDummyTransaction(): LedgerTransaction {
@@ -67,8 +66,8 @@ class LedgerTransactionQueryTests : TestDependencyInjectionBase() {
         for (i in 0..4) {
             tx.addInputState(makeDummyStateAndRef(i))
             tx.addInputState(makeDummyStateAndRef(i.toString()))
-            tx.addOutputState(makeDummyState(i), DUMMY_PROGRAM_ID)
-            tx.addOutputState(makeDummyState(i.toString()), DUMMY_PROGRAM_ID)
+            tx.addOutputState(makeDummyState(i), DummyContract.PROGRAM_ID)
+            tx.addOutputState(makeDummyState(i.toString()), DummyContract.PROGRAM_ID)
             tx.addCommand(Commands.Cmd1(i), listOf(services.myInfo.chooseIdentity().owningKey))
             tx.addCommand(Commands.Cmd2(i), listOf(services.myInfo.chooseIdentity().owningKey))
         }

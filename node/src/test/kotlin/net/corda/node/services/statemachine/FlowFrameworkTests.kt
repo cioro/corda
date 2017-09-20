@@ -36,7 +36,7 @@ import net.corda.node.services.persistence.checkpoints
 import net.corda.node.services.transactions.ValidatingNotaryService
 import net.corda.nodeapi.ServiceInfo
 import net.corda.testing.*
-import net.corda.testing.contracts.DUMMY_PROGRAM_ID
+import net.corda.testing.contracts.DummyContract
 import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.InMemoryMessagingNetwork
 import net.corda.testing.node.InMemoryMessagingNetwork.MessageTransfer
@@ -604,7 +604,7 @@ class FlowFrameworkTests {
     @Test
     fun `wait for transaction`() {
         val ptx = TransactionBuilder(notary = notary1Identity)
-                .addOutputState(DummyState(), DUMMY_PROGRAM_ID)
+                .addOutputState(DummyState(), DummyContract.PROGRAM_ID)
                 .addCommand(dummyCommand(node1.info.chooseIdentity().owningKey))
         val stx = node1.services.signInitialTransaction(ptx)
 
@@ -619,7 +619,7 @@ class FlowFrameworkTests {
     @Test
     fun `committer throws exception before calling the finality flow`() {
         val ptx = TransactionBuilder(notary = notary1Identity)
-                .addOutputState(DummyState(), DUMMY_PROGRAM_ID)
+                .addOutputState(DummyState(), DummyContract.PROGRAM_ID)
                 .addCommand(dummyCommand())
         val stx = node1.services.signInitialTransaction(ptx)
 
@@ -636,7 +636,7 @@ class FlowFrameworkTests {
     @Test
     fun `verify vault query service is tokenizable by force checkpointing within a flow`() {
         val ptx = TransactionBuilder(notary = notary1Identity)
-                .addOutputState(DummyState(), DUMMY_PROGRAM_ID)
+                .addOutputState(DummyState(), DummyContract.PROGRAM_ID)
                 .addCommand(dummyCommand(node1.info.chooseIdentity().owningKey))
         val stx = node1.services.signInitialTransaction(ptx)
 

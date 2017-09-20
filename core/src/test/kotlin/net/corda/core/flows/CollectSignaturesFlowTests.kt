@@ -14,7 +14,6 @@ import net.corda.node.internal.StartedNode
 import net.corda.testing.MINI_CORP_KEY
 import net.corda.testing.chooseIdentity
 import net.corda.testing.chooseIdentityAndCert
-import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.testing.contracts.DummyContract
 import net.corda.testing.getDefaultNotary
 import net.corda.testing.node.MockNetwork
@@ -92,7 +91,7 @@ class CollectSignaturesFlowTests {
                 val myInputKeys = state.participants.map { it.owningKey }
                 val myKeys = myInputKeys + (identities[ourIdentity] ?: ourIdentity).owningKey
                 val command = Command(DummyContract.Commands.Create(), myInputKeys)
-                val builder = TransactionBuilder(notary).withItems(StateAndContract(state, DUMMY_PROGRAM_ID), command)
+                val builder = TransactionBuilder(notary).withItems(StateAndContract(state, DummyContract.PROGRAM_ID), command)
                 val ptx = serviceHub.signInitialTransaction(builder)
                 val stx = subFlow(CollectSignaturesFlow(ptx, myKeys))
                 return subFlow(FinalityFlow(stx)).single()
@@ -111,7 +110,7 @@ class CollectSignaturesFlowTests {
                 val notary = serviceHub.getDefaultNotary()
                 val myInputKeys = state.participants.map { it.owningKey }
                 val command = Command(DummyContract.Commands.Create(), myInputKeys)
-                val builder = TransactionBuilder(notary).withItems(StateAndContract(state, DUMMY_PROGRAM_ID), command)
+                val builder = TransactionBuilder(notary).withItems(StateAndContract(state, DummyContract.PROGRAM_ID), command)
                 val ptx = serviceHub.signInitialTransaction(builder)
                 val stx = subFlow(CollectSignaturesFlow(ptx, myInputKeys))
                 return subFlow(FinalityFlow(stx)).single()

@@ -21,7 +21,6 @@ import net.corda.core.utilities.ProgressTracker.Step;
 import net.corda.core.utilities.UntrustworthyData;
 import net.corda.finance.contracts.asset.Cash;
 import net.corda.testing.contracts.DummyContract;
-import net.corda.testing.contracts.DummyContractKt;
 import net.corda.testing.contracts.DummyState;
 import org.jetbrains.annotations.NotNull;
 
@@ -326,7 +325,7 @@ public class FlowCookbookJava {
             // We can also add items using methods for the individual components:
             // DOCSTART 28
             txBuilder.addInputState(ourStateAndRef);
-            txBuilder.addOutputState(ourOutput, DummyContractKt.DUMMY_PROGRAM_ID);
+            txBuilder.addOutputState(ourOutput, DummyContract.PROGRAM_ID);
             txBuilder.addCommand(ourCommand);
             txBuilder.addAttachment(ourAttachment);
             // DOCEND 28

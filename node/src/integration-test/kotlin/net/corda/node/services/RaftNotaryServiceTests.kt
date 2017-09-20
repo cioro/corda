@@ -15,7 +15,6 @@ import net.corda.node.internal.StartedNode
 import net.corda.node.services.transactions.RaftValidatingNotaryService
 import net.corda.testing.DUMMY_BANK_A
 import net.corda.testing.chooseIdentity
-import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.testing.contracts.DummyContract
 import net.corda.testing.dummyCommand
 import net.corda.testing.node.NodeBasedTest
@@ -48,7 +47,7 @@ class RaftNotaryServiceTests : NodeBasedTest() {
 
         val secondSpendBuilder = TransactionBuilder(notaryParty).withItems(inputState).run {
             val dummyState = DummyContract.SingleOwnerState(0, bankA.info.chooseIdentity())
-            addOutputState(dummyState, DUMMY_PROGRAM_ID)
+            addOutputState(dummyState, DummyContract.PROGRAM_ID)
             addCommand(dummyCommand(bankA.services.myInfo.chooseIdentity().owningKey))
             this
         }

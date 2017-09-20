@@ -16,11 +16,13 @@ import net.corda.core.node.services.vault.QueryCriteria.VaultQueryCriteria
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
-import net.corda.core.utilities.*
+import net.corda.core.utilities.ProgressTracker
 import net.corda.core.utilities.ProgressTracker.Step
+import net.corda.core.utilities.UntrustworthyData
+import net.corda.core.utilities.seconds
+import net.corda.core.utilities.unwrap
 import net.corda.finance.contracts.asset.Cash
 import net.corda.testing.ALICE_PUBKEY
-import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.testing.contracts.DummyContract
 import net.corda.testing.contracts.DummyState
 import java.security.PublicKey
@@ -305,7 +307,7 @@ object FlowCookbook {
             // We can also add items using methods for the individual components:
             // DOCSTART 28
             txBuilder.addInputState(ourStateAndRef)
-            txBuilder.addOutputState(ourOutput, DUMMY_PROGRAM_ID)
+            txBuilder.addOutputState(ourOutput, DummyContract.PROGRAM_ID)
             txBuilder.addCommand(ourCommand)
             txBuilder.addAttachment(ourAttachment)
             // DOCEND 28

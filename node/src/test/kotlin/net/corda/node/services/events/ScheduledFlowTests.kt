@@ -16,13 +16,13 @@ import net.corda.core.node.services.vault.SortAttribute
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.getOrThrow
 import net.corda.node.internal.StartedNode
-import net.corda.nodeapi.ServiceInfo
 import net.corda.node.services.network.NetworkMapService
 import net.corda.node.services.statemachine.StateMachineManager
 import net.corda.node.services.transactions.ValidatingNotaryService
+import net.corda.nodeapi.ServiceInfo
 import net.corda.testing.DUMMY_NOTARY
 import net.corda.testing.chooseIdentity
-import net.corda.testing.contracts.DUMMY_PROGRAM_ID
+import net.corda.testing.contracts.DummyContract
 import net.corda.testing.dummyCommand
 import net.corda.testing.node.MockNetwork
 import org.junit.After
@@ -67,7 +67,7 @@ class ScheduledFlowTests {
 
             val notary = serviceHub.networkMapCache.getAnyNotary()
             val builder = TransactionBuilder(notary)
-                    .addOutputState(scheduledState, DUMMY_PROGRAM_ID)
+                    .addOutputState(scheduledState, DummyContract.PROGRAM_ID)
                     .addCommand(dummyCommand(ourIdentity.owningKey))
             val tx = serviceHub.signInitialTransaction(builder)
             subFlow(FinalityFlow(tx, setOf(ourIdentity)))
@@ -89,7 +89,7 @@ class ScheduledFlowTests {
             val newStateOutput = scheduledState.copy(processed = true)
             val builder = TransactionBuilder(notary)
                     .addInputState(state)
-                    .addOutputState(newStateOutput, DUMMY_PROGRAM_ID)
+                    .addOutputState(newStateOutput, DummyContract.PROGRAM_ID)
                     .addCommand(dummyCommand(ourIdentity.owningKey))
             val tx = serviceHub.signInitialTransaction(builder)
             subFlow(FinalityFlow(tx, setOf(scheduledState.source, scheduledState.destination)))
