@@ -11,6 +11,8 @@ import net.corda.node.internal.StartedNode
 import net.corda.testing.chooseIdentity
 import net.corda.testing.node.MockNetwork
 import net.corda.testing.node.MockServices
+import net.corda.testing.setCordappPackages
+import net.corda.testing.unsetCordappPackages
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -27,6 +29,7 @@ class ManualFinalityFlowTests {
 
     @Before
     fun setup() {
+        setCordappPackages("net.corda.finance.contracts.asset")
         mockNet = MockNetwork()
         val nodes = mockNet.createSomeNodes(3)
         nodeA = nodes.partyNodes[0]
@@ -40,6 +43,7 @@ class ManualFinalityFlowTests {
     @After
     fun tearDown() {
         mockNet.stopNodes()
+        unsetCordappPackages()
     }
 
     @Test

@@ -259,7 +259,7 @@ object WireTransactionSerializer : Serializer<WireTransaction>() {
             serializationContext.serviceHub.attachments.openAttachment(id)?.let { attachments += it } ?: run { missing += id }
         }
         missing.isNotEmpty() && throw MissingAttachmentsException(missing)
-        return AttachmentsClassLoader(attachments)
+        return AttachmentsClassLoader(attachments, kryo.classLoader)
     }
 
     @Suppress("UNCHECKED_CAST")
