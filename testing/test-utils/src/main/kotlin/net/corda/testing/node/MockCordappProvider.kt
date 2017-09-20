@@ -2,14 +2,14 @@ package net.corda.testing.node
 
 import net.corda.core.contracts.ContractClassName
 import net.corda.core.cordapp.Cordapp
-import net.corda.core.cordapp.CordappContext
-import net.corda.core.cordapp.CordappService
 import net.corda.core.node.ServiceHub
 import net.corda.core.node.services.AttachmentId
+import net.corda.node.internal.cordapp.CordappLoader
+import net.corda.node.internal.cordapp.CordappProvider
 import java.nio.file.Paths
 import java.util.*
 
-class MockCordappService : CordappService {
+class MockCordappProvider(cordappLoader: CordappLoader) : CordappProvider(cordappLoader) {
     val cordappRegistry = mutableListOf<Pair<Cordapp, AttachmentId>>()
 
     fun addMockCordapp(contractClassName: ContractClassName, services: ServiceHub) {
@@ -19,8 +19,7 @@ class MockCordappService : CordappService {
         }
     }
 
-    override fun getContractAttachmentID(contractClassName: ContractClassName): AttachmentId? = cordappRegistry.find { it.first.contractClassNames.contains(contractClassName) }?.second
-    override fun getAppContext(): CordappContext = TODO()
+    override fun getContractAttachmentID(contractClassName: ContractClassName): AttachmentId? = cordappRegistry.find { it.first.contractClassNames.contains(contractClassName) }?.second ?: super.getContractAttachmentID(contractClassName)
 
     private fun findOrImportAttachment(data: ByteArray, services: ServiceHub): AttachmentId {
         return if (services.attachments is MockAttachmentStorage) {

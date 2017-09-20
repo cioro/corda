@@ -18,10 +18,8 @@ import net.corda.finance.contracts.asset.Obligation.Lifecycle
 import net.corda.testing.*
 import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.testing.contracts.DummyState
-import net.corda.testing.node.MockCordappService
 import net.corda.testing.node.MockServices
 import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -469,7 +467,7 @@ class ObligationTests {
                 attachments(OBLIGATION_PROGRAM_ID)
                 input("Bob's $1,000,000 obligation to Alice")
                 input("MegaCorp's $1,000,000 obligation to Bob")
-                output("MegaCorp's $1,000,000 obligation to Alice") { oneMillionDollars.OBLIGATION between Pair(MEGA_CORP, ALICE) }
+                output(OBLIGATION_PROGRAM_ID, "MegaCorp's $1,000,000 obligation to Alice") { oneMillionDollars.OBLIGATION between Pair(MEGA_CORP, ALICE) }
                 command(ALICE_PUBKEY, BOB_PUBKEY) { Obligation.Commands.Net(NetType.PAYMENT) }
                 timeWindow(TEST_TX_TIME)
                 this `fails with` "all involved parties have signed"
@@ -595,7 +593,8 @@ class ObligationTests {
         }
 
         // Try defaulting an obligation that is now in the past
-        ledger(mockService) {
+        unsetCordappPackages()
+        ledger {
             transaction("Settlement") {
                 attachments(OBLIGATION_PROGRAM_ID)
                 input(OBLIGATION_PROGRAM_ID, oneMillionDollars.OBLIGATION between Pair(ALICE, BOB) `at` pastTestTime)

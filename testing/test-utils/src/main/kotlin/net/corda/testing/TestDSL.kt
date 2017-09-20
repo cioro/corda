@@ -12,7 +12,7 @@ import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.transactions.WireTransaction
 import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.testing.contracts.DummyContract
-import net.corda.testing.node.MockCordappService
+import net.corda.testing.node.MockCordappProvider
 import java.io.InputStream
 import java.security.KeyPair
 import java.security.PublicKey
@@ -64,8 +64,7 @@ class AttachmentResolutionException(attachmentId: SecureHash) : Exception("Attac
 data class TestTransactionDSLInterpreter private constructor(
         override val ledgerInterpreter: TestLedgerDSLInterpreter,
         val transactionBuilder: TransactionBuilder,
-        internal val labelToIndexMap: HashMap<String, Int>,
-        val mockCordappService: MockCordappService = MockCordappService()
+        internal val labelToIndexMap: HashMap<String, Int>
 ) : TransactionDSLInterpreter, OutputStateLookup by ledgerInterpreter {
 
     constructor(
@@ -75,15 +74,14 @@ data class TestTransactionDSLInterpreter private constructor(
 
     val services = object : ServiceHub by ledgerInterpreter.services {
         override fun loadState(stateRef: StateRef) = ledgerInterpreter.resolveStateRef<ContractState>(stateRef)
-        override val cordappService: CordappService = mockCordappService
+        override val cordappService: CordappService = ledgerInterpreter.services.cordappService
     }
 
     private fun copy(): TestTransactionDSLInterpreter =
             TestTransactionDSLInterpreter(
                     ledgerInterpreter = ledgerInterpreter,
                     transactionBuilder = transactionBuilder.copy(),
-                    labelToIndexMap = HashMap(labelToIndexMap),
-                    mockCordappService = mockCordappService
+                    labelToIndexMap = HashMap(labelToIndexMap)
             )
 
     internal fun toWireTransaction() = transactionBuilder.toWireTransaction(services)
@@ -138,7 +136,7 @@ data class TestTransactionDSLInterpreter private constructor(
     ) = dsl(TransactionDSL(copy()))
 
     override fun _attachment(contractClassName: ContractClassName) {
-        mockCordappService.addMockCordapp(contractClassName, services)
+        (services.cordappService as MockCordappProvider).addMockCordapp(contractClassName, services)
     }
 }
 

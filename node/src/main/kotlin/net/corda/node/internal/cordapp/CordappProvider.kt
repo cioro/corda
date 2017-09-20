@@ -13,7 +13,7 @@ import java.net.URLClassLoader
 /**
  * Cordapp provider and store. For querying CorDapps for their attachment and vice versa.
  */
-class CordappProvider(private val cordappLoader: CordappLoader) : CordappService {
+open class CordappProvider(private val cordappLoader: CordappLoader) : CordappService {
     override fun getAppContext(): CordappContext {
         // TODO: Use better supported APIs in Java 9
         Exception().stackTrace.forEach { stackFrame ->
