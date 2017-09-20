@@ -95,24 +95,28 @@ class CordappLoader private constructor(private val cordappJarPaths: List<URL>) 
 
         /** Takes a package of classes and creates a JAR from them - only use in tests */
         private fun createDevCordappJar(scanPackage: String, path: URL, jarPackageName: String): URI {
-            val cordappDir = File("build/tmp/generated-test-cordapps")
-            cordappDir.mkdirs()
-            val cordappJAR = File(cordappDir, "$scanPackage-${UUID.randomUUID()}.jar")
-            logger.info("Generating a test-only cordapp of classes discovered in $scanPackage at $cordappJAR")
-            FileOutputStream(cordappJAR).use {
-                JarOutputStream(it).use { jos ->
-                    val scanDir = File(path.toURI())
-                    scanDir.walkTopDown().forEach {
-                        val entryPath = jarPackageName + "/" + scanDir.toPath().relativize(it.toPath()).toString().replace('\\', '/')
-                        jos.putNextEntry(ZipEntry(entryPath))
-                        if (it.isFile) {
-                            Files.copy(it.toPath(), jos)
+            if(!generatedCordapps.contains(path)) {
+                val cordappDir = File("build/tmp/generated-test-cordapps")
+                cordappDir.mkdirs()
+                val cordappJAR = File(cordappDir, "$scanPackage-${UUID.randomUUID()}.jar")
+                logger.info("Generating a test-only cordapp of classes discovered in $scanPackage at $cordappJAR")
+                FileOutputStream(cordappJAR).use {
+                    JarOutputStream(it).use { jos ->
+                        val scanDir = File(path.toURI())
+                        scanDir.walkTopDown().forEach {
+                            val entryPath = jarPackageName + "/" + scanDir.toPath().relativize(it.toPath()).toString().replace('\\', '/')
+                            jos.putNextEntry(ZipEntry(entryPath))
+                            if (it.isFile) {
+                                Files.copy(it.toPath(), jos)
+                            }
+                            jos.closeEntry()
                         }
-                        jos.closeEntry()
                     }
                 }
+                generatedCordapps[path] = cordappJAR.toURI()
             }
-            return cordappJAR.toURI()
+
+            return generatedCordapps[path]!!
         }
 
         /**
@@ -120,6 +124,7 @@ class CordappLoader private constructor(private val cordappJarPaths: List<URL>) 
          */
         @VisibleForTesting
         var testPackages: List<String> = emptyList()
+        private val generatedCordapps = mutableMapOf<URL, URI>()
     }
 
     private fun loadCordapps(): List<Cordapp> {
