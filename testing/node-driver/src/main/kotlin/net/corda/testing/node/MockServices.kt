@@ -47,14 +47,7 @@ import java.util.*
  * A singleton utility that only provides a mock identity, key and storage service. However, this is sufficient for
  * building chains of transactions and verifying them. It isn't sufficient for testing flows however.
  */
-open class MockServices(cordappPackages: List<String> = emptyList(), vararg val keys: KeyPair) : ServiceHub {
-
-    init {
-        if(!cordappPackages.isEmpty()) {
-            setCordappPackages(*cordappPackages.toTypedArray())
-        }
-    }
-
+open class MockServices(private val cordappPackages: List<String> = emptyList(), vararg val keys: KeyPair) : ServiceHub {
     companion object {
 
         @JvmStatic
@@ -168,7 +161,7 @@ open class MockServices(cordappPackages: List<String> = emptyList(), vararg val 
         return NodeInfo(emptyList(), listOf(identity), 1,  serial = 1L)
     }
     override val transactionVerifierService: TransactionVerifierService get() = InMemoryTransactionVerifierService(2)
-    val mockCordappProvider: MockCordappProvider = MockCordappProvider(CordappLoader.createWithTestPackages()).start(attachments) as MockCordappProvider
+    val mockCordappProvider: MockCordappProvider = MockCordappProvider(CordappLoader.createWithTestPackages(cordappPackages + CordappLoader.testPackages)).start(attachments) as MockCordappProvider
     override val cordappService: CordappService = mockCordappProvider
 
     lateinit var hibernatePersister: HibernateObserver

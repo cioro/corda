@@ -28,7 +28,7 @@ class CordappLoaderTest {
 
     @Test
     fun `test that classes that are in a cordapp are loaded`() {
-        val loader = CordappLoader.createDevMode("net.corda.node.cordapp")
+        val loader = CordappLoader.createWithTestPackages(listOf("net.corda.node.cordapp"))
         val initiatedFlows = loader.cordapps.first().initiatedFlows
         val expectedClass = loader.appClassLoader.loadClass("net.corda.node.cordapp.LoaderTestFlow").asSubclass(FlowLogic::class.java)
         assertThat(initiatedFlows).contains(expectedClass)

@@ -59,17 +59,9 @@ class CordappLoader private constructor(private val cordappJarPaths: List<URL>) 
         }
 
         /**
-         * Creates a dev mode CordappLoader intended to only be used in test environments.
-         *
-         * @param scanPackage Resolves the JARs that contain scanPackage and use them as the source for
-         *                      the classpath scanning.
+         * Create a dev mode CordappLoader for test environments
          */
-        fun createDevMode(scanPackages: String) = CordappLoader(scanPackages.split(",").flatMap(this::createScanPackage))
-
-        /**
-         * Create a dev mode CordappLoader for test environments - sources scan packages from [CordappLoader.testPackages]
-         */
-        fun createWithTestPackages() = CordappLoader(testPackages.flatMap(this::createScanPackage))
+        fun createWithTestPackages(testPackages: List<String>) = CordappLoader(testPackages.flatMap(this::createScanPackage))
 
         /**
          * Creates a dev mode CordappLoader intended only to be used in test environments
@@ -125,6 +117,10 @@ class CordappLoader private constructor(private val cordappJarPaths: List<URL>) 
         @VisibleForTesting
         var testPackages: List<String> = emptyList()
         private val generatedCordapps = mutableMapOf<URL, URI>()
+    }
+
+    init {
+        logger.info("Using cordapp JARs: ${cordappJarPaths.joinToString { it.toExternalForm() }}")
     }
 
     private fun loadCordapps(): List<Cordapp> {

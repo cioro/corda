@@ -500,6 +500,7 @@ class ShutdownManager(private val executorService: ExecutorService) {
     }
 
     fun shutdown() {
+        unsetCordappPackages()
         val shutdownActionFutures = state.locked {
             if (isShutdown) {
                 emptyList<CordaFuture<() -> Unit>>()
@@ -791,7 +792,7 @@ class DriverDSL(
         _executorService = Executors.newScheduledThreadPool(2, ThreadFactoryBuilder().setNameFormat("driver-pool-thread-%d").build())
         _shutdownManager = ShutdownManager(executorService)
         // We set this property so that in-process nodes find cordapps. Out-of-process nodes need this passed in when started.
-        System.setProperty("net.corda.node.cordapp.scan.packages", packagesToScanString)
+        setCordappPackages(packagesToScanString)
         if (networkMapStartStrategy.startDedicated) {
             startDedicatedNetworkMapService().andForget(log) // Allow it to start concurrently with other nodes.
         }

@@ -28,11 +28,12 @@ class CollectSignaturesFlowTests {
     lateinit var b: StartedNode<MockNetwork.MockNode>
     lateinit var c: StartedNode<MockNetwork.MockNode>
     lateinit var notary: Party
-    val services = MockServices()
+    lateinit var services: MockServices
 
     @Before
     fun setup() {
         setCordappPackages("net.corda.testing.contracts")
+        services = MockServices()
         mockNet = MockNetwork()
         val nodes = mockNet.createSomeNodes(3)
         a = nodes.partyNodes[0]
