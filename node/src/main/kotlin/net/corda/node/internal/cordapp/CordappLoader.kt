@@ -64,7 +64,7 @@ class CordappLoader private constructor(private val cordappJarPaths: List<URL>) 
          * @param scanPackage Resolves the JARs that contain scanPackage and use them as the source for
          *                      the classpath scanning.
          */
-        fun createDevMode(scanPackage: String) = CordappLoader(createScanPackage(scanPackage))
+        fun createDevMode(scanPackages: String) = CordappLoader(scanPackages.split(",").flatMap(this::createScanPackage))
 
         /**
          * Create a dev mode CordappLoader for test environments - sources scan packages from [CordappLoader.testPackages]

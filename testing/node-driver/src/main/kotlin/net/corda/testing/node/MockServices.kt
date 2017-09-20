@@ -50,7 +50,9 @@ import java.util.*
 open class MockServices(cordappPackages: List<String> = emptyList(), vararg val keys: KeyPair) : ServiceHub {
 
     init {
-        setCordappPackages(*cordappPackages.toTypedArray())
+        if(!cordappPackages.isEmpty()) {
+            setCordappPackages(*cordappPackages.toTypedArray())
+        }
     }
 
     companion object {
