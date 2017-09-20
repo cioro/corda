@@ -87,7 +87,8 @@ fun <A> verifierDriver(
                         useTestClock = useTestClock,
                         networkMapStartStrategy = networkMapStartStrategy,
                         isDebug = isDebug,
-                        startNodesInProcess = startNodesInProcess
+                        startNodesInProcess = startNodesInProcess,
+                        extraCordappPackagesToScan = emptyList()
                 )
         ),
         coerce = { it },

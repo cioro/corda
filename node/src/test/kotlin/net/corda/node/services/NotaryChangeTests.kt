@@ -149,7 +149,7 @@ class NotaryChangeTests {
         }
         val stx = node.services.signInitialTransaction(tx)
         node.services.recordTransactions(stx)
-        return tx.toWireTransaction()
+        return tx.toWireTransaction(node.services)
     }
 
     // TODO: Add more test cases once we have a general flow/service exception handling mechanism:
