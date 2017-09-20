@@ -396,7 +396,7 @@ class IRSTests : TestDependencyInjectionBase() {
         return ledger(initialiseSerialization = false) {
             transaction("Agreement") {
                 attachments(IRS_PROGRAM_ID)
-                output(IRS_PROGRAM_ID, "irs post agreement") { singleIRS() }
+                unconstrainedOutput(IRS_PROGRAM_ID, "irs post agreement") { singleIRS() }
                 command(MEGA_CORP_PUBKEY) { InterestRateSwap.Commands.Agree() }
                 timeWindow(TEST_TX_TIME)
                 this.verifies()
@@ -406,7 +406,7 @@ class IRSTests : TestDependencyInjectionBase() {
                 attachments(IRS_PROGRAM_ID)
                 input("irs post agreement")
                 val postAgreement = "irs post agreement".output<InterestRateSwap.State>()
-                output(IRS_PROGRAM_ID, "irs post first fixing") {
+                unconstrainedOutput(IRS_PROGRAM_ID, "irs post first fixing") {
                     postAgreement.copy(
                             postAgreement.fixedLeg,
                             postAgreement.floatingLeg,
@@ -671,7 +671,7 @@ class IRSTests : TestDependencyInjectionBase() {
         return ledger(initialiseSerialization = false) {
             transaction("Agreement") {
                 attachments(IRS_PROGRAM_ID)
-                output(IRS_PROGRAM_ID, "irs post agreement1") {
+                unconstrainedOutput(IRS_PROGRAM_ID, "irs post agreement1") {
                     irs.copy(
                             irs.fixedLeg,
                             irs.floatingLeg,
@@ -686,7 +686,7 @@ class IRSTests : TestDependencyInjectionBase() {
 
             transaction("Agreement") {
                 attachments(IRS_PROGRAM_ID)
-                output(IRS_PROGRAM_ID, "irs post agreement2") {
+                unconstrainedOutput(IRS_PROGRAM_ID, "irs post agreement2") {
                     irs.copy(
                             linearId = UniqueIdentifier("t2"),
                             fixedLeg = irs.fixedLeg,
@@ -705,7 +705,7 @@ class IRSTests : TestDependencyInjectionBase() {
                 input("irs post agreement1")
                 input("irs post agreement2")
                 val postAgreement1 = "irs post agreement1".output<InterestRateSwap.State>()
-                output(IRS_PROGRAM_ID, "irs post first fixing1") {
+                unconstrainedOutput(IRS_PROGRAM_ID, "irs post first fixing1") {
                     postAgreement1.copy(
                             postAgreement1.fixedLeg,
                             postAgreement1.floatingLeg,
@@ -714,7 +714,7 @@ class IRSTests : TestDependencyInjectionBase() {
                     )
                 }
                 val postAgreement2 = "irs post agreement2".output<InterestRateSwap.State>()
-                output(IRS_PROGRAM_ID, "irs post first fixing2") {
+                unconstrainedOutput(IRS_PROGRAM_ID, "irs post first fixing2") {
                     postAgreement2.copy(
                             postAgreement2.fixedLeg,
                             postAgreement2.floatingLeg,
