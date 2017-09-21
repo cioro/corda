@@ -66,7 +66,7 @@ class FlowFrameworkTests {
         }
     }
 
-    private val mockNet = MockNetwork(servicePeerAllocationStrategy = RoundRobin())
+    private lateinit var mockNet: MockNetwork
     private val receivedSessionMessages = ArrayList<SessionTransfer>()
     private lateinit var node1: StartedNode<MockNode>
     private lateinit var node2: StartedNode<MockNode>
@@ -75,6 +75,8 @@ class FlowFrameworkTests {
 
     @Before
     fun start() {
+        setCordappPackages("net.corda.finance.contracts.asset", "net.corda.testing.contracts")
+        mockNet = MockNetwork(servicePeerAllocationStrategy = RoundRobin())
         node1 = mockNet.createNode(advertisedServices = ServiceInfo(NetworkMapService.type))
         node2 = mockNet.createNode(networkMapAddress = node1.network.myAddress)
 
@@ -101,6 +103,7 @@ class FlowFrameworkTests {
     fun cleanUp() {
         mockNet.stopNodes()
         receivedSessionMessages.clear()
+        unsetCordappPackages()
     }
 
     @Test

@@ -74,6 +74,7 @@ class TwoPartyTradeFlowTests {
 
     @Before
     fun before() {
+        setCordappPackages("net.corda.finance.contracts.asset")
         LogHelper.setLevel("platform.trade", "core.contract.TransactionGroup", "recordingmap")
     }
 
@@ -81,6 +82,7 @@ class TwoPartyTradeFlowTests {
     fun after() {
         mockNet.stopNodes()
         LogHelper.reset("platform.trade", "core.contract.TransactionGroup", "recordingmap")
+        unsetCordappPackages()
     }
 
     @Test
